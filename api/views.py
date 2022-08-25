@@ -41,6 +41,37 @@ import requests
 from django.db.models import Q
 
 
+
+def create(request):
+    if request.method== 'POST':
+
+        json_data = request.body  # return data in bytes
+        print(json_data)
+        stream = io.BytesIO(json_data)  # json_data is json object
+        
+        python_data= JSONParser().parse(stream) #parse function take <class '_io.BytesIO'> object as a arguments
+        print(python_data,'-------------------')
+        serialize_data= ProSerializer(data= python_data) # for deserializion
+        print(serialize_data,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        if serialize_data.is_valid():
+            serialize_data.save()
+        print(serialize_data.data,'pppppppppppppppppppp')
+        return Response(serialize_data.data)
+        print(serialize_data.data)
+    else:
+        messages.error(request, "You are not allowed on this page")
+        raise PermissionDenied
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
 class BlogPostAPIView(mixins.CreateModelMixin, generics.ListAPIView):  # or ListCreateAPIView
     serializer_class = BlogPostSerializer
 
